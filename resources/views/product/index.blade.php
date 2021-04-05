@@ -99,7 +99,7 @@ $(function () {
     $('body').on('click', '.deleteProduct', function () {
      
         var product_id = $(this).data("id");
-        var r = confirm("Are you sure want to delete !");
+        var r = confirm("Are you sure want to delete!");
         if (r == true) {
             $.ajax({
                 type: "DELETE",
@@ -126,7 +126,7 @@ $(function () {
             ids.push($(this).val());
         });
 
-        var r = confirm("Are you sure want to delete !");
+        var r = confirm("Are you sure want to delete!");
         if (r == true) {
             $.ajax({
                 type: "POST",

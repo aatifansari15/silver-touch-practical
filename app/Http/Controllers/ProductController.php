@@ -210,6 +210,7 @@ class ProductController extends Controller
     public function destroy($id)
     {
         $product = Product::findOrFail($id);
+        $this->__removeFileFromFolder([$product->image]);
         $product->delete();
     
         return response()->json(['status' => 200, 'msg' => 'Product has been deleted.']);
@@ -217,7 +218,10 @@ class ProductController extends Controller
 
     public function destroyAll(Request $request)
     {
+        $producs_images = Product::whereIn('id',$request->ids)->get()->pluck('image');
+        $this->__removeFileFromFolder($producs_images);
         Product::whereIn('id',$request->ids)->delete();
+        
         return response()->json(['status' => 200, 'msg' => 'Product(s) has been deleted.']);
     }
 }

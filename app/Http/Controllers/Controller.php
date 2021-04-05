@@ -30,4 +30,18 @@ class Controller extends BaseController
 	    // For hard code
 	    $img = Image::make($path)->resize($width, $height)->save($path);
 	}
+
+	public function __removeFileFromFolder($ImageArray)
+	{
+		foreach ($ImageArray as $key => $image) {
+            $filePath = public_path('uploads') . '/' . $image;
+            if (file_exists($filePath)) {
+                $thumbFilePath = public_path('uploads/thumbnail') . '/' . $image;
+                if (file_exists($thumbFilePath)) {
+                    unlink($thumbFilePath);
+                }
+                unlink($filePath);
+            }
+        }
+	}
 }

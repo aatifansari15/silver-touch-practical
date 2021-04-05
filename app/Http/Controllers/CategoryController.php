@@ -78,7 +78,7 @@ class CategoryController extends Controller
     {
         request()->validate([
             'name' => 'required',
-            'image' => 'required|image',
+            'image' => 'required|image|dimensions:min_width=250,min_height=250',
         ]);
 
         $category = new Category;
@@ -140,9 +140,8 @@ class CategoryController extends Controller
     public function update(Request $request, $id)
     {
         request()->validate([
-            //'name' => 'required|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/',
             'name' => 'required',
-            'image' => 'nullable|image',
+            'image' => 'nullable|image|dimensions:min_width=250,min_height=250',
         ]);
 
         $category = Category::findOrFail($id);
@@ -199,13 +198,14 @@ class CategoryController extends Controller
         array_push($array_of_ids, $id);
 
         foreach ($parent->products as $product) {
-            echo '<pre>';print_r($product->toArray());echo '</pre>';
             $product->update(['category_id' => NULL]);
         }
 
         // Destroying all of them
-        echo '<pre>';print_r($array_of_ids);echo '</pre>';exit();
-        //Category::destroy($array_of_ids);
+        $cat_images = Category::whereIn('id',$array_of_ids)->get()->pluck('image');
+        $this->__removeFileFromFolder($cat_images);
+        //echo '<pre>';print_r($array_of_ids);echo '</pre>';exit();
+        Category::destroy($array_of_ids);
 
         return redirect()->route('categories.index')
                         ->with('success','Category has been deleted.');
@@ -230,6 +230,8 @@ class CategoryController extends Controller
             }
 
             // Destroying all of them
+            $cat_images = Category::whereIn('id',$array_of_ids)->get()->pluck('image');
+            $this->__removeFileFromFolder($cat_images);
             Category::destroy($array_of_ids);
         }
         return redirect()->route('categories.index')
@@ -241,7 +243,6 @@ class CategoryController extends Controller
         if($category){
             foreach ($category->children as $cat) {
                 foreach ($cat->products as $product) {
-                    //echo '<pre>'; print_r($product->toArray()); echo '</pre>';
                     $product->update(['category_id' => NULL]);
                 }
                 $ids[] = $cat->id;

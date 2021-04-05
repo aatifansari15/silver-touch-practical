@@ -80,7 +80,7 @@ $(function () {
             alert('Please select at least one checkbox to delete.');
         }else{
             $('#dids').val(ids);
-            var r = confirm("Are you sure want to delete !");
+            var r = confirm("Are you sure want to delete!");
             if (r == true) {
                 $('#mltplDltFrm').submit();
             }
